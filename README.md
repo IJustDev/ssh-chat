@@ -4,9 +4,11 @@
 [![Bountysource](https://www.bountysource.com/badge/team?team_id=52292&style=bounties_received)](https://www.bountysource.com/teams/ssh-chat/issues?utm_source=ssh-chat&utm_medium=shield&utm_campaign=bounties_received)
 
 
-# ssh-chat
+# ssh-chat - privacy concerned
 
 Custom SSH server written in Go. Instead of a shell, you get a chat prompt.
+
+__It's a fork of ssh-chat. But with a option for passwords.__
 
 ## Demo
 
@@ -58,6 +60,7 @@ Application Options:
   -i, --identity=  Private key to identify server with. (default: ~/.ssh/id_rsa)
       --bind=      Host and port to listen on. (default: 0.0.0.0:2022)
       --admin=     File of public keys who are admins.
+      --password=  Password as a string the user needs to input.
       --whitelist= Optional file of public keys who are allowed to connect.
       --motd=      Optional Message of the Day file.
       --log=       Write chat log to this file.

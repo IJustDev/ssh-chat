@@ -25,6 +25,7 @@ type User struct {
 	Ignored  *set.Set
 	colorIdx int
 	joined   time.Time
+    authenticated bool
 	msg      chan Message
 	done     chan struct{}
 
@@ -60,6 +61,14 @@ func NewUserScreen(identity Identifier, screen io.WriteCloser) *User {
 
 func (u *User) Joined() time.Time {
 	return u.joined
+}
+
+func (u *User) Authenticated() bool{
+    return u.authenticated
+}
+
+func (u *User) Authenticate() {
+    u.authenticated = true
 }
 
 func (u *User) Config() UserConfig {

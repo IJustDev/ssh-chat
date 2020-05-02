@@ -111,7 +111,56 @@ func InitCommands(c *Commands) {
 		Prefix: "/help",
 		Handler: func(room *Room, msg message.CommandMsg) error {
 			op := room.IsOp(msg.From())
-			room.Send(message.NewSystemMsg(room.commands.Help(op), msg.From()))
+            room.Send(message.NewSystemMsg(
+                room.commands.Help(op),
+                msg.From(),
+            ))
+			return nil
+		},
+	})
+
+	c.Add(Command{
+		Prefix: "/login",
+		Handler: func(room *Room, msg message.CommandMsg) error {
+            user := msg.From()
+            if user.Authenticated() {
+                room.Send(message.NewSystemMsg("Already logged in!", msg.From()))
+                return nil
+            }
+            password_input := strings.TrimLeft(msg.Body(), "/login")
+            if password_input == "" {
+                return nil
+            } else {
+                password_input = password_input[1:]
+            }
+
+            if password_input == room.Password {
+                room.Send(message.NewSystemMsg("Logged in!", msg.From()))
+                user.Authenticate()
+                room.History(user)
+                s := fmt.Sprintf("%s joined. (Connected: %d)", user.Name(), room.Members.Len())
+                room.Send(message.NewAnnounceMsg(s))
+            } else {
+                room.Send(message.NewSystemMsg("Wrong password!", msg.From()))
+            }
+			return nil
+		},
+	})
+
+	c.Add(Command{
+		Prefix: "/topic",
+		Handler: func(room *Room, msg message.CommandMsg) error {
+			room.Send(message.NewSystemMsg(room.Topic(), msg.From()))
+			return nil
+		},
+	})
+
+	c.Add(Command{
+		Prefix: "/clear",
+		Handler: func(room *Room, msg message.CommandMsg) error {
+            for i := 0; i != 50; i++ {
+                room.Send(message.NewClearMessage(msg.From()))
+            }
 			return nil
 		},
 	})

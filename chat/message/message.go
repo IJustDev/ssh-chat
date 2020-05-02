@@ -231,6 +231,39 @@ func (m *SystemMsg) To() *User {
 	return m.to
 }
 
+// Clear Message
+// For local clearing of chat
+
+type ClearMsg struct {
+    Msg
+    to *User
+}
+
+func NewClearMessage(to *User) *ClearMsg {
+	return &ClearMsg{
+        Msg: Msg {
+            body:       "",
+            timestamp:  time.Now(),
+        },
+        to: to,
+    }
+}
+
+func (m *ClearMsg) Render(t *Theme) string {
+	if t == nil {
+		return m.String()
+	}
+	return t.ColorSys(m.String())
+}
+
+func (m *ClearMsg) String() string {
+	return fmt.Sprintf("")
+}
+
+func (m *ClearMsg) To() *User {
+	return m.to
+}
+
 // AnnounceMsg is a message sent from the server to everyone, like a join or
 // leave event.
 type AnnounceMsg struct {

@@ -31,6 +31,7 @@ var Version string = "dev"
 // Options contains the flag options
 type Options struct {
 	Admin      string `long:"admin" description:"File of public keys who are admins."`
+	Password   string `long:"password" description:"Password as a string the user needs to input."`
 	Bind       string `long:"bind" description:"Host and port to listen on." default:"0.0.0.0:2022"`
 	Identity   string `short:"i" long:"identity" description:"Private key to identify server with." default:"~/.ssh/id_rsa"`
 	Log        string `long:"log" description:"Write chat log to this file."`
@@ -170,7 +171,7 @@ func main() {
 
 	fmt.Printf("Listening for connections on %v\n", s.Addr().String())
 
-	host := sshchat.NewHost(s, auth)
+	host := sshchat.NewHost(s, auth, options.Password)
 	host.SetTheme(message.Themes[0])
 	host.Version = Version
 

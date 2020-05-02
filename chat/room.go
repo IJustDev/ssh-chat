@@ -38,11 +38,12 @@ type Room struct {
 	closed    bool
 	closeOnce sync.Once
 
+    Password  string
 	Members *set.Set
 }
 
 // NewRoom creates a new room.
-func NewRoom() *Room {
+func NewRoom(password string) *Room {
 	broadcast := make(chan message.Message, roomBuffer)
 
 	return &Room{
@@ -50,6 +51,7 @@ func NewRoom() *Room {
 		history:   message.NewHistory(historyLen),
 		commands:  *defaultCommands,
 
+        Password:  password,
 		Members: set.New(),
 	}
 }
@@ -82,8 +84,10 @@ func (r *Room) HandleMsg(m message.Message) {
 	var fromID string
 	if fromMsg, ok := m.(message.MessageFrom); ok {
 		fromID = fromMsg.From().ID()
+        if !fromMsg.From().Authenticated() && fromMsg.Command() != "/login" && fromMsg.Command() != "/exit" {
+            return
+        }
 	}
-
 	switch m := m.(type) {
 	case *message.CommandMsg:
 		cmd := *m
@@ -150,9 +154,6 @@ func (r *Room) Join(u *message.User) (*Member, error) {
 	if err != nil {
 		return nil, err
 	}
-	r.History(u)
-	s := fmt.Sprintf("%s joined. (Connected: %d)", u.Name(), r.Members.Len())
-	r.Send(message.NewAnnounceMsg(s))
 	return member, nil
 }
 

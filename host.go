@@ -48,8 +48,8 @@ type Host struct {
 }
 
 // NewHost creates a Host on top of an existing listener.
-func NewHost(listener *sshd.SSHListener, auth *Auth) *Host {
-	room := chat.NewRoom()
+func NewHost(listener *sshd.SSHListener, auth *Auth, password string) *Host {
+	room := chat.NewRoom(password)
 	h := Host{
 		Room:     room,
 		listener: listener,
